@@ -1,4 +1,4 @@
-package com.whc.springboot.modules.controller;
+package com.whc.springboot.modules.test.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
