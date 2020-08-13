@@ -2,12 +2,14 @@ package com.whc.springboot.modules.test.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.whc.springboot.modules.common.vo.Result;
 import com.whc.springboot.modules.common.vo.SearchVo;
 import com.whc.springboot.modules.test.dao.CityDao;
 import com.whc.springboot.modules.test.entity.City;
 import com.whc.springboot.modules.test.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,10 +39,43 @@ public class CityServiceImpl implements CityService {
     @Override
     public PageInfo<City> getCitiesBySearchVo(int countryId,SearchVo searchVo) {
         //初始化当前页
+        searchVo.initSearchVo();
+        //设置分页初始值
         PageHelper.startPage(searchVo.getCurrentPage(), searchVo.getPageSize());
-        return new PageInfo<City>(Optional.ofNullable(
-                cityDao.getCitiesByCountryId(countryId)).orElse(Collections.emptyList()));
+        return new PageInfo<City>(Optional
+                .ofNullable(cityDao.getCitiesByCountryId(countryId))
+                .orElse(Collections.emptyList()));
 
+    }
+
+    @Override
+    public PageInfo<City> getCitiesBySearchVo(SearchVo searchVo) {
+        searchVo.initSearchVo();
+        PageHelper.startPage(searchVo.getCurrentPage(),searchVo.getPageSize());
+        return new PageInfo<City>(Optional
+                .ofNullable(cityDao.getCitiesBySearchVo(searchVo))
+                .orElse(Collections.emptyList()));
+    }
+
+    @Override
+    @Transactional
+    public Result<City> insertCity(City city) {
+        cityDao.insertCity(city);
+        return new Result<City>(Result.ResultStatus.SUCCESS.status,"Insert success",city);
+    }
+
+    @Override
+    @Transactional
+    public Result<City> updateCity(City city) {
+        cityDao.updateCity(city);
+        return new Result<City>(Result.ResultStatus.SUCCESS.status,"Update success",city);
+    }
+
+    @Override
+    @Transactional
+    public Result<Object> deleteCity(int cityId) {
+        cityDao.deleteCity(cityId);
+        return new Result<Object>(Result.ResultStatus.SUCCESS.status,"Delete success");
     }
 
 

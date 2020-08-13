@@ -1,6 +1,7 @@
 package com.whc.springboot.modules.test.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.whc.springboot.modules.common.vo.Result;
 import com.whc.springboot.modules.common.vo.SearchVo;
 import com.whc.springboot.modules.test.entity.City;
 import com.whc.springboot.modules.test.service.CityService;
@@ -40,6 +41,52 @@ public class CityController {
     public PageInfo<City> getCitiesBySearchVo(
             @PathVariable int countryId, @RequestBody SearchVo searchVo) {
         return cityService.getCitiesBySearchVo(countryId, searchVo);
+    }
+
+    /**
+     * 127.0.0.1:81/cityController/city------post
+     * {"currentPage":"1","pageSize":"5","keyWord":"Sh","orderBy":"city_name","sort":"desc"}
+     */
+    @PostMapping(value = "/city", consumes = "application/json")
+    public PageInfo<City> getCitiesBySearchVo(@RequestBody SearchVo searchVo) {
+        return cityService.getCitiesBySearchVo(searchVo);
+    }
+
+    /**
+     * 127.0.0.1:81/cityController/icity---post
+     * {"cityName":"test1","localCityName":"testCity","countryId":"522"}
+     */
+    @PostMapping(value = "/icity", consumes = "application/json")
+    public Result<City> insertCity(@RequestBody City city) {
+        return cityService.insertCity(city);
+    }
+
+    /**
+     * 127.0.0.1:81/cityController/city---put
+     * "cityId":"2258"cityName":"testUpdate"
+     */
+    //数据类型是表单的修改方法
+    @PutMapping(value = "/city", consumes = "application/x-www-form-urlencoded")
+    public Result<City> updateCity(@ModelAttribute City city) {
+        return cityService.updateCity(city);
+    }
+
+    /**
+     * 127.0.0.1:81/cityController/city---put
+     * {"cityId":"2258"cityName":"testUpdate"}
+     */
+    //数据类型是json对象的修改方法
+//    @PutMapping(value = "/city", consumes = "application/json")
+//    public Result<City> updateCity(@RequestBody City city) {
+//        return cityService.updateCity(city);
+//    }
+
+    /**
+     * 127.0.0.1:81/cityController/city/2258---delete
+     */
+    @DeleteMapping("/city/{cityId}")
+    public Result<Object> deleteCity(@PathVariable int cityId) {
+        return cityService.deleteCity(cityId);
     }
 
 }
