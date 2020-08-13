@@ -23,4 +23,12 @@ public interface StudentService {
     Page<Student> getStudentBySearchVo(SearchVo searchVo);
 
     List<Student> getStudents();
+
+    List<Student> findByStudentName(String studentName);
+
+    List<Student> findByStudentNameLike(String studentName);
+
+    List<Student> findTop2ByStudentNameLike(String studentName);
+
+    List<Student> getStudentsByStudentName(String studentName, int cardId);
 }

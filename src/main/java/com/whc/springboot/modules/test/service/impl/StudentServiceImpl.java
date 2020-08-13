@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * ClassName: StudentServiceImpl <br/>
@@ -62,13 +64,46 @@ public class StudentServiceImpl implements StudentService {
                 .withIgnoreCase("studentId");//忽略id进行查询
         //获取数据列表
         Example<Student> example = Example.of(student, exampleMatcher);
-        return studentRepository.findAll(example,pageable);
+        return studentRepository.findAll(example, pageable);
     }
 
     @Override
     public List<Student> getStudents() {
-        Sort.Direction direction=Sort.Direction.DESC;
-        Sort sort = new Sort(direction,"studentName");
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = new Sort(direction, "studentName");
         return studentRepository.findAll(sort);
+    }
+
+    @Override
+    public List<Student> findByStudentName(String studentName) {
+        return studentRepository.findByStudentName(studentName);
+    }
+
+    @Override
+    public List<Student> findByStudentNameLike(String studentName) {
+        return Optional
+                .ofNullable(studentRepository.findByStudentNameLike(
+                        String.format("%s%S%s", "%", studentName, "%")))
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Student> findTop2ByStudentNameLike(String studentName) {
+        return Optional
+                .ofNullable(studentRepository.findTop2ByStudentNameLike(
+                        String.format("%s%S%s", "%", studentName, "%")))
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Student> getStudentsByStudentName(String studentName, int cardId) {
+        if (cardId > 0) {
+            return studentRepository.getStudentsByParams(studentName, cardId);
+        } else {
+            return Optional
+                    .ofNullable(studentRepository.findTop2ByStudentNameLike(
+                            String.format("%s%S%s", "%", studentName, "%")))
+                    .orElse(Collections.emptyList());
+        }
     }
 }

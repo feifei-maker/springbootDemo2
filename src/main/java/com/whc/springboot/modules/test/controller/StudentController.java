@@ -58,4 +58,36 @@ public class StudentController {
     public List<Student> getStudents() {
         return studentService.getStudents();
     }
+    /**
+     * 127.0.0.1:81/studentController/studentByParams?studentName=whc2 ---- get
+     */
+    @GetMapping("/studentByParams")
+    public List<Student> getStudentsByParams(
+            @RequestParam String studentName,
+            @RequestParam(required = false, defaultValue = "0") Integer cardId) {
+        return studentService.getStudentsByStudentName(studentName, cardId);
+    }
+    /**
+     * 127.0.0.1:81/studentController/findByStudentName?studentName=whc2 ---- get
+     */
+   @GetMapping("/findByStudentName")
+    public List<Student> findByStudentName(@RequestParam String studentName) {
+        return studentService.findByStudentName(studentName);
+    }
+
+    /**
+     * 127.0.0.1:81/studentController/findByStudentNameLike?studentName=whc ---- get
+     */
+    @GetMapping("/findByStudentNameLike")
+    public List<Student> findByStudentNameLike(@RequestParam String studentName) {
+        return studentService.findByStudentNameLike(studentName);
+    }
+
+    /**
+     * 127.0.0.1:81/studentController/findTop2ByStudentNameLike?studentName=whc ---- get
+     */
+    @GetMapping("/findTop2ByStudentNameLike")
+    public List<Student> findTop2ByStudentNameLike(@RequestParam String studentName) {
+        return studentService.findTop2ByStudentNameLike(studentName);
+    }
 }
