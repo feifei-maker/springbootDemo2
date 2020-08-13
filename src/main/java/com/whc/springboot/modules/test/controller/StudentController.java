@@ -2,13 +2,14 @@ package com.whc.springboot.modules.test.controller;
 
 
 import com.whc.springboot.modules.common.vo.Result;
+import com.whc.springboot.modules.common.vo.SearchVo;
 import com.whc.springboot.modules.test.entity.Student;
 import com.whc.springboot.modules.test.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * ClassName: StudentController <br/>
@@ -29,8 +30,32 @@ public class StudentController {
      * 127.0.0.1:81/studentController/student ---- post
      * {"studentName":"whc1","studentCard":{"cardId":"3"}}
      */
-    @PostMapping(value = "student", consumes = "application/json")
+    @PostMapping(value = "/student", consumes = "application/json")
     public Result<Student> insertStudent(@RequestBody Student student) {
         return studentService.insertStudent(student);
+    }
+
+    /**
+     * 127.0.0.1:81/studentController/student/3 ---- get
+     */
+    @GetMapping(value = "/students/{studentId}", consumes = "application/json")
+    public Student getStudentByStudentId(@PathVariable int studentId) {
+        return studentService.getStudentByStudentId(studentId);
+    }
+    /**
+     * 127.0.0.1:81/studentController/students ---- post
+     * {"currentPage":"1","pageSize":"5","keyWord":"whc","orderBy":"studentName","sort":"desc"}
+     */
+    @PostMapping(value = "/students",consumes = "application/json")
+    public Page<Student> getStudentBySearchVo(@RequestBody SearchVo searchVo) {
+        System.err.println(studentService.getStudentBySearchVo(searchVo));
+        return studentService.getStudentBySearchVo(searchVo);
+    }
+    /**
+     * 127.0.0.1:81/studentController/students ---- get
+     */
+    @GetMapping("/students")
+    public List<Student> getStudents() {
+        return studentService.getStudents();
     }
 }

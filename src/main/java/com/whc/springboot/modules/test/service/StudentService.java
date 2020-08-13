@@ -1,9 +1,11 @@
 package com.whc.springboot.modules.test.service;
 
 import com.whc.springboot.modules.common.vo.Result;
+import com.whc.springboot.modules.common.vo.SearchVo;
 import com.whc.springboot.modules.test.entity.Student;
+import org.springframework.data.domain.Page;
 
-import javax.naming.spi.DirStateFactory;
+import java.util.List;
 
 /**
  * ClassName: StudentService <br/>
@@ -14,5 +16,11 @@ import javax.naming.spi.DirStateFactory;
  * @since JDK 1.8
  */
 public interface StudentService {
-   Result<Student> insertStudent(Student student);
+    Result<Student> insertStudent(Student student);
+
+    Student getStudentByStudentId(int studentId);
+
+    Page<Student> getStudentBySearchVo(SearchVo searchVo);
+
+    List<Student> getStudents();
 }
