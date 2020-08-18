@@ -31,7 +31,14 @@ public class CountryController {
      * 127.0.0.1:81/countryController/country?countryName=China------get
      */
     @GetMapping("/country")
-    public Country getCountryByCountryName(@RequestParam String countryName){
+    public Country getCountryByCountryName(@RequestParam String countryName) {
         return countryService.getCountryByCountryName(countryName);
+    }
+    /**
+     * 127.0.0.1:81/countryController/redis/country/522------get
+     */
+    @GetMapping("/redis/country/{countryId}")
+    public Country getCountryByRedis(@PathVariable int countryId) {
+        return countryService.getCountryByRedis(countryId);
     }
 }

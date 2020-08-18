@@ -83,7 +83,7 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> findByStudentNameLike(String studentName) {
         return Optional
                 .ofNullable(studentRepository.findByStudentNameLike(
-                        String.format("%s%S%s", "%", studentName, "%")))
+                        String.format("%s%s%s", "%", studentName, "%")))
                 .orElse(Collections.emptyList());
     }
 
@@ -91,7 +91,7 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> findTop2ByStudentNameLike(String studentName) {
         return Optional
                 .ofNullable(studentRepository.findTop2ByStudentNameLike(
-                        String.format("%s%S%s", "%", studentName, "%")))
+                        String.format("%s%s%s", "%", studentName, "%")))
                 .orElse(Collections.emptyList());
     }
 
@@ -102,7 +102,7 @@ public class StudentServiceImpl implements StudentService {
         } else {
             return Optional
                     .ofNullable(studentRepository.findTop2ByStudentNameLike(
-                            String.format("%s%S%s", "%", studentName, "%")))
+                            String.format("%s%s%s", "%", studentName, "%")))
                     .orElse(Collections.emptyList());
         }
     }

@@ -12,5 +12,8 @@ import com.whc.springboot.modules.test.entity.Country;
  */
 public interface CountryService {
     Country getCountryByCountryId(int countryId);
+
     Country getCountryByCountryName(String countryName);
+
+    Country getCountryByRedis(int countryId);
 }

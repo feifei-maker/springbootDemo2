@@ -66,7 +66,12 @@ public class CityServiceImpl implements CityService {
 
     @Override
     @Transactional
+//    指定发生某个异常时不进行回滚
+//    @Transactional(noRollbackFor  = ArithmeticException.class)
+//    指定发生某个异常时进行回滚
+//    @Transactional(rollbackFor = ArithmeticException.class)
     public Result<City> updateCity(City city) {
+//        int a = 1/0;
         cityDao.updateCity(city);
         return new Result<City>(Result.ResultStatus.SUCCESS.status,"Update success",city);
     }
