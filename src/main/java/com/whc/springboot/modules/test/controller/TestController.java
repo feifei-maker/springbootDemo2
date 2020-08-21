@@ -41,8 +41,16 @@ public class TestController {
     private CityService cityService;
     @Autowired
     private CountryService countryService;
+
     private final static Logger LOGGER = LoggerFactory.getLogger(TestController.class);
 
+    /**
+     * 127.0.0.1:81/test/indexSimple---get
+     */
+    @GetMapping("/indexSimple")
+    public String indexSimpleTestPage(){
+        return "indexSimple";
+    }
     /**
      * 127.0.0.1:81/test/testMethod?paramKey=abc----get
      */
