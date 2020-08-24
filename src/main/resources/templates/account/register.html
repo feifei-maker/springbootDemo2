@@ -1,0 +1,62 @@
+<div class="login_wrapper">
+    <div id="register" class="animate form login_form">
+        <section class="login_content">
+            <form action="javascript:void(0);">
+                <h1>register</h1>
+                <div>
+                    <input name="userName" type="text" id="userName" class="form-control" placeholder="Username" required=""/>
+                </div>
+                <div>
+                    <input name="password" type="password" id="password" class="form-control" placeholder="Password" required=""/>
+                </div>
+                <div>
+                    <a id="registerButton" class="btn btn-default submit" href="javascript:void(0);" onclick="register()">Submit</a>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="separator">
+                    <p class="change_link">Already a member ?
+                        <a href="/account/login" class="to_register">Register</a>
+                    </p>
+
+                    <div class="clearfix"></div>
+                    <br/>
+
+                    <div>
+                        <h1><i class="fa fa-paw"></i>WHC</h1>
+                        <p>©2016 All Rights Reserved. Creat by WHC</p>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<script type="text/javascript">
+    // $(function () {
+    //     $("#registerButton").bind("click",function () {
+    //         register();
+    //     });
+    // });
+    function register() {
+        var user = {};
+        user.userName = $("#userName").val();
+        user.password = $("#password").val();
+        $.ajax({
+            url:"/api/register",
+            type:"post",
+            data:JSON.stringify(user),
+            contentType:"application/json",
+            success:function (data) {
+                if (data.status == 200){
+                    location.href = "/account/login";
+                }else {
+                    layer.msg(data.responseText,{icon:0});
+                }
+            },
+            error:function (data) {
+                layer.msg(data.responseText,{icon:0});
+            }
+        });
+    }
+</script>
