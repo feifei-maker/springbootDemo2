@@ -14,9 +14,16 @@ import com.whc.springboot.modules.common.vo.SearchVo;
  * @since JDK 1.8
  */
 public interface UserService {
-    Result<User> register(User user);
+    Result<User> insertUser(User user);
 
     Result<User> login(User user);
 
     PageInfo<User> getUsersBySearchVo(SearchVo searchVo);
+
+    Result<User> updateUser(User user);
+
+    Result<User> deleteUser(int userId);
+
+    User getUserByUserId(int userId);
+
 }

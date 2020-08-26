@@ -36,4 +36,27 @@ public class AccountController {
     public String registerPage(){
         return "indexSimple";
     }
+    /**
+     * 127.0.0.1:81/account/roles ---- get
+     */
+    @GetMapping("/roles")
+    public String rolesPage() {
+        return "index";
+    }
+
+    /**
+     * 127.0.0.1:81/account/resources ---- get
+     */
+    @GetMapping("/resources")
+    public String resourcesPage() {
+        return "index";
+    }
+
+    /**
+     * 127.0.0.1:81/account/profile ---- get
+     */
+    @GetMapping("/profile")
+    public String profilePage() {
+        return "index";
+    }
 }

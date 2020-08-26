@@ -16,6 +16,8 @@
     <!-- layer -->
     <script th:src="@{https://cdn.bootcss.com/layer/2.1/layer.js}"
             type="text/javascript"></script>
+    <!-- 删除确认框-->
+    <script th:src="${'/plugin/bootbox/bootbox.js'}" type="text/javascript"></script>
 </head>
 <body class="nav-md">
 <div class="container body">
@@ -36,6 +38,6 @@
     </div>
 </div>
 <!-- 引入 自定义的js -->
-<script th:src="${'/js/custom.min.js'}" type="text/javascript"></script>
+<script th:src="${'/js/custom.js'}" type="text/javascript"></script>
 </body>
 </html>

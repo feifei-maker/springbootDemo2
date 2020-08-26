@@ -2,10 +2,7 @@ package com.whc.springboot.modules.account.dao;
 
 import com.whc.springboot.modules.account.entity.User;
 import com.whc.springboot.modules.common.vo.SearchVo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -46,4 +43,20 @@ public interface UserDao {
             + "</choose>"
             + "</script>")
     List<User> getUsersBySearchVo(SearchVo searchVo);
+
+    @Update("update user set user_name = #{userName},user_img = #{userImg} where user_id = #{userId}")
+    void updateUser(User user);
+
+    @Delete("delete from user where user_id = #{userId}")
+    void delete(int userId);
+
+    @Select("select * from user where user_id = #{userId}")
+    @Results(id = "userResults",value = {
+            //user_id第一次映射(如果没有对它本身进行映射得到的结果中user_id就不会有值)
+            @Result(column = "user_id", property = "userId"),
+            //user_id第二次映射
+            @Result(column = "user_id", property = "roles", javaType = List.class,
+                    many = @Many(select = "com.whc.springboot.modules.account.dao.RoleDao.getRolesByUserId"))
+    })
+    User getUserByUserId(int userId);
 }
