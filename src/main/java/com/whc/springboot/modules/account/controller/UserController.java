@@ -8,6 +8,7 @@ import com.whc.springboot.modules.common.vo.SearchVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * ClassName: UserController <br/>
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     /**
-     *127.0.0.1:81/api/user/33----delete
+     * 127.0.0.1:81/api/user/33----delete
      */
     //删除
     @DeleteMapping("/user/{userId}")
@@ -74,11 +75,29 @@ public class UserController {
     }
 
     /**
-     *127.0.0.1:81/api/user/27----get
+     * 127.0.0.1:81/api/user/27----get
      */
     //通过id查询user
     @GetMapping("/user/{userId}")
     public User getUserByUserId(@PathVariable int userId) {
         return userService.getUserByUserId(userId);
+    }
+
+    //multipart/form-data与x-www-form-urlencoded区别:
+    //multipart/form-data：既可以上传文件等二进制数据，也可以上传表单键值对，只是最后会转化为一条信息；
+    //x-www-form-urlencoded：只能上传键值对，并且键值对都是间隔分开的。
+    /**
+     * 127.0.0.1:81/api/userImg ---- post
+     */
+    @PostMapping(value = "/userImg", consumes = "multipart/form-data")
+    public Result<String> uploadFile(@RequestParam MultipartFile file) {
+        return userService.uploadUserImg(file);
+    }
+    /**
+     * 127.0.0.1:81/api/profile ---- put
+     */
+    @PutMapping(value = "/profile", consumes = "application/json")
+    public Result<User> updateUserProfile(@RequestBody User user) {
+        return userService.updateUserProfile(user);
     }
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.whc.springboot.modules.account.entity.User;
 import com.whc.springboot.modules.common.vo.Result;
 import com.whc.springboot.modules.common.vo.SearchVo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * ClassName: UserService <br/>
@@ -25,5 +26,9 @@ public interface UserService {
     Result<User> deleteUser(int userId);
 
     User getUserByUserId(int userId);
+
+    Result<String> uploadUserImg(MultipartFile file);
+
+    Result<User> updateUserProfile(User user);
 
 }

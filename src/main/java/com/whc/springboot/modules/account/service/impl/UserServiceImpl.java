@@ -2,6 +2,8 @@ package com.whc.springboot.modules.account.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.whc.springboot.config.ResourceConfigBean;
+import com.whc.springboot.config.WebMvcConfig;
 import com.whc.springboot.modules.account.dao.UserDao;
 import com.whc.springboot.modules.account.dao.UserRoleDao;
 import com.whc.springboot.modules.account.entity.Role;
@@ -13,7 +15,12 @@ import com.whc.springboot.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     @Autowired
     private UserRoleDao userRoleDao;
+    @Autowired
+    private ResourceConfigBean resourceConfigBean;
 
     @Override
     @Transactional
@@ -51,7 +60,7 @@ public class UserServiceImpl implements UserService {
             //在给用户分配角色之前先删除原来的与该Id相关的信息(中间表的信息)
             userRoleDao.deleteUserRoleByUserId(user.getUserId());
             List<Role> roles = user.getRoles();
-            if (roles != null&& !roles.isEmpty()){
+            if (roles != null && !roles.isEmpty()) {
 //                for (int i = 0; i < roles.size(); i++) {
 //                    userRoleDao.insertUserRole(user.getUserId(),roles.get(i).getRoleId());
 //                }
@@ -59,8 +68,8 @@ public class UserServiceImpl implements UserService {
 //                    userRoleDao.insertUserRole(user.getUserId(),role.getRoleId());
 //                }
                 //JDK1.8之后的循化使用方式
-                roles.stream().forEach(item->{
-                    userRoleDao.insertUserRole(user.getUserId(),item.getRoleId());
+                roles.stream().forEach(item -> {
+                    userRoleDao.insertUserRole(user.getUserId(), item.getRoleId());
                 });
             }
             return new Result<User>(Result.ResultStatus.SUCCESS.status, "Insert success", user);
@@ -98,10 +107,10 @@ public class UserServiceImpl implements UserService {
             //在给用户分配角色之前先删除原来的与该Id相关的信息
             userRoleDao.deleteUserRoleByUserId(user.getUserId());
             List<Role> roles = user.getRoles();
-            if (roles != null&& !roles.isEmpty()){
+            if (roles != null && !roles.isEmpty()) {
                 //JDK1.8之后的循化使用方式
-                roles.stream().forEach(item->{
-                    userRoleDao.insertUserRole(user.getUserId(),item.getRoleId());
+                roles.stream().forEach(item -> {
+                    userRoleDao.insertUserRole(user.getUserId(), item.getRoleId());
                 });
             }
             return new Result<User>(Result.ResultStatus.SUCCESS.status, "Update success", user);
@@ -119,5 +128,46 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUserId(int userId) {
         return userDao.getUserByUserId(userId);
+    }
+
+    //图片上传
+    @Override
+    public Result<String> uploadUserImg(MultipartFile file) {
+        if (file.isEmpty()) {
+            return new Result<String>(Result.ResultStatus.FAILED.status, "Please select img.");
+        } else {
+            //相对路径（应用中的路径）
+            String relativePath = "";
+            //绝对路径（本地路径）
+            String destFilePath = "";
+            try {
+                //获取文件的本地路径和相对路径
+                String osName = System.getProperty("os.name");
+                if (osName.toLowerCase().startsWith("win")) {
+                    destFilePath = resourceConfigBean.getLocationPathForWindows() + file.getOriginalFilename();
+                } else {
+                    destFilePath = resourceConfigBean.getLocationPathForLinux() + file.getOriginalFilename();
+                }
+                relativePath = resourceConfigBean.getRelativePath() + file.getOriginalFilename();
+                //把内存中的文件写入磁盘中
+                File destFile = new File(destFilePath);
+                file.transferTo(destFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new Result<String>(Result.ResultStatus.FAILED.status, "Upload failed.");
+            }
+            return new Result<String>(Result.ResultStatus.SUCCESS.status, "Upload success.", relativePath);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Result<User> updateUserProfile(User user) {
+        User userTemp = userDao.getUserByUserName(user.getUserName());
+        if (userTemp != null && userTemp.getUserId() != user.getUserId()) {
+            return new Result<User>(Result.ResultStatus.FAILED.status, "User name is repeat.");
+        }
+        userDao.updateUser(user);
+        return new Result<User>(Result.ResultStatus.SUCCESS.status, "Edit success.", user);
     }
 }
