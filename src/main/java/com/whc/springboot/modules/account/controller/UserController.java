@@ -5,6 +5,7 @@ import com.whc.springboot.modules.account.entity.User;
 import com.whc.springboot.modules.account.service.UserService;
 import com.whc.springboot.modules.common.vo.Result;
 import com.whc.springboot.modules.common.vo.SearchVo;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +71,8 @@ public class UserController {
      */
     //删除
     @DeleteMapping("/user/{userId}")
+    //该注解中的value的值对应的是数据库中的permission的值
+    @RequiresPermissions(value = "/api/user")
     public Result<User> deleteUser(@PathVariable int userId) {
         return userService.deleteUser(userId);
     }

@@ -12,6 +12,10 @@ import com.whc.springboot.modules.account.service.UserService;
 import com.whc.springboot.modules.common.vo.Result;
 import com.whc.springboot.modules.common.vo.SearchVo;
 import com.whc.springboot.utils.MD5Util;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,20 +80,40 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //身份验证过程:用户登录 ----> 包装令牌（用户名、密码、记住我） ----> subject 调用 realm，包装身份验证器
+    //----> 身份验证器和令牌做比对（用户名和密码的比对）
     @Override
     public Result<User> login(User user) {
-        User userSql = userDao.getUserByUserName(user.getUserName());
-        if (userSql != null && userSql.getPassword().equals(MD5Util.getMD5(user.getPassword()))) {
-            return new Result<User>(Result.ResultStatus.SUCCESS.status, "select success", user);
-        } else {
-            return new Result<User>(Result.ResultStatus.FAILED.status, "userName or password is error", user);
+        Subject subject = SecurityUtils.getSubject();
+        //创建一个由用户和密码包装的令牌类
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), MD5Util.getMD5(user.getPassword()));
+        token.setRememberMe(user.getRememberMe());
+        try {
+            //令牌包装类会和myReam返回的SimpleAuthenticationInfo类（密码和用户）作对比
+            subject.login(token);
+            subject.checkRoles();
+        } catch (Exception e) {
+            return new Result<User>(Result.ResultStatus.FAILED.status, "UserName or password is error.");
         }
+        Session session = subject.getSession();
+        session.setAttribute("user",(User)subject.getPrincipal());
+        return new Result<User>(Result.ResultStatus.SUCCESS.status, "Login success");
+//        User userSql = userDao.getUserByUserName(user.getUserName());
+//        if (userSql != null && userSql.getPassword().equals(MD5Util.getMD5(user.getPassword()))) {
+//            return new Result<User>(Result.ResultStatus.SUCCESS.status, "select success", user);
+//        } else {
+//            return new Result<User>(Result.ResultStatus.FAILED.status, "userName or password is error", user);
+//        }
     }
 
     @Override
     public PageInfo<User> getUsersBySearchVo(SearchVo searchVo) {
         searchVo.initSearchVo();
         PageHelper.startPage(searchVo.getCurrentPage(), searchVo.getPageSize());
+        //Optional解决发生空指针异常的问题
+        //如果前面的表达式为空值就会返回后面默认的表达式的值
+        //Collections.emptyList()：返回的是一个不能进行增删的size为0的空List(不可变列表)
+        //好处：使用这个方法作为返回值就不需要再创建一个新对象，可以减少内存开销。
         return new PageInfo<User>(Optional
                 .ofNullable(userDao.getUsersBySearchVo(searchVo))
                 .orElse(Collections.emptyList()));
@@ -169,5 +193,15 @@ public class UserServiceImpl implements UserService {
         }
         userDao.updateUser(user);
         return new Result<User>(Result.ResultStatus.SUCCESS.status, "Edit success.", user);
+    }
+
+    @Override
+    public User getUserByUserName(String userName) {
+        return userDao.getUserByUserName(userName);
+    }
+
+    @Override
+    public void logout() {
+
     }
 }

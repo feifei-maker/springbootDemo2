@@ -72,7 +72,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(requestViewInterceptor).addPathPatterns("/**");
     }
 
-
+    //解决resources下面静态资源无法访问
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //获取操作系统名字

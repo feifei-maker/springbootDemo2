@@ -330,9 +330,10 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        initFileInput();
         //可以从session中获取userId
-        initUserProfile(27);
+        // var userId = $("#userId").val();
+        initFileInput($("#userId").html());
+        initUserProfile(1);
 
         $("#editProfile").bind("click", function(){
             editProfile();

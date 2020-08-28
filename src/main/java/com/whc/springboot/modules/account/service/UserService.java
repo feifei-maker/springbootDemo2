@@ -31,4 +31,7 @@ public interface UserService {
 
     Result<User> updateUserProfile(User user);
 
+    User getUserByUserName(String userName);
+
+    void logout();
 }

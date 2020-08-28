@@ -27,8 +27,9 @@ public interface RoleDao {
     @Insert("insert into role (role_name) values (#{roleName})")
     @Options(useGeneratedKeys = true, keyColumn = "role_id", keyProperty = "roleId")
     void insertRole(Role role);
+
     @Insert("insert role(role_name) value(#{roleName})")
-    @Options(useGeneratedKeys=true, keyProperty="roleId", keyColumn="role_id")
+    @Options(useGeneratedKeys = true, keyProperty = "roleId", keyColumn = "role_id")
     void addRole(Role role);
 
     @Update("update role set role_name = #{roleName} where role_id = #{roleId}")
